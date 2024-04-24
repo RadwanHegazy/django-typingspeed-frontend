@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+    
+    <div class="container">
+        
+
+        <div class="user">
+            <img src="{{main_url}}{{c_user.picture}}" alt="">
+            <p>{{c_user.full_name}}</p>
+            <p>نقاطك : {{c_user.points}}</p>
+        </div>
+
+        <a href="#" class="play">العب الان</a>
+        <a href="{% url 'logout' %}" class="logout">تسجيل الخروج</a>
+        
+        <p>أفضل 5 أشخاص</p>
+
+        <div class="users">
+            
+            {% for u in c_user.leaders %}
+                <div class="u">
+                    <p>{{u.full_name}}</p>
+                    <p>{{u.points}}</p>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>
