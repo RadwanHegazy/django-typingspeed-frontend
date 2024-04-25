@@ -36,6 +36,22 @@
 
     </div>
 
+    <script>
+        const token = document.cookie.split('=')[2];
+
+        var playBtn = document.querySelector('.play');
+
+        playBtn.addEventListener('click',()=>{
+            var socket = new WebSocket('ws://127.0.0.1:4444/ws/battle/search/?token='+token);
+            socket.onmessage = function(e){
+                var respones = JSON.parse(e.data);
+                
+                console.log(respones)
+            }
+
+        })
+
+    </script>
 
 </body>
 </html>

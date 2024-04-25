@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from battle.views.get import get_battle
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('user.urls'))
+    path('',include('user.urls')),
+    path('battle/get/<str:battle_id>/',get_battle.as_view(),name='battle'),
 ]
