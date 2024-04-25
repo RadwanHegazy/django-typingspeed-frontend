@@ -21,11 +21,10 @@ class register_view (View) :
 
         if 'picture' in request.FILES : 
             action.files = {
-                'picture' : request.POST.get('picture')
+                'picture' : request.FILES.get('picture')
             }
 
-        print(action)
-
+        
         action.post()
 
         if action.is_valid() : 
@@ -34,6 +33,5 @@ class register_view (View) :
             res.set_cookie('user',user_token)
             return res
         
-        print(action.json_data)
         messages.error(request,'an error happened on registeration.')
         return redirect('register')

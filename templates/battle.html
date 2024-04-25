@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الرئيسية</title>
-    <link rel="stylesheet" href="css/battle.css">
+    <link rel="stylesheet" href="{% static 'css/battle.css' %}">
 </head>
 <body>
     
@@ -13,28 +14,28 @@
         <div class="top">
 
             <div class="user">
-                <img src="images/user.png" alt="">
-                <p>Radwan Gaber</p>
+                <img src="{{main_url}}{{players.me.picture}}" alt="">
+                <p>{{players.me.full_name}}</p>
             </div>
 
             <p id="vers">ضد</p>
 
             <div class="user">
-                <img src="images/user.png" alt="">
-                <p>Radwan Gaber</p>
+                <img src="{{main_url}}{{players.friend.picture}}" alt="">
+                <p>{{players.friend.full_name}}</p>
             </div>
 
         </div>
 
         <div class="text">
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit possimus ea corporis illum nobis accusantium dolorum, repellendus error, dolores velit, commodi laudantium. Dignissimos saepe voluptate eaque recusandae velit nihil ea placeat quisquam, fugiat amet laborum asperiores, minima distinctio! Molestiae consequuntur ducimus fuga ratione itaque nostrum cum facere, officiis odit, dolorum adipisci blanditiis. Repudiandae, reprehenderit. Aperiam aliquam, nisi sapiente consequuntur incidunt a eaque id inventore tenetur asperiores necessitatibus hic voluptatum atque, ipsa perferendis culpa itaque deleniti, facilis dignissimos! Minus sit magnam, quod natus illum optio culpa. Impedit repellat nemo voluptate recusandae, facere nesciunt vero voluptatem ducimus cupiditate error, inventore nam quam!</p>
+            <p>{{text}}</p>
         </div>
 
 
         <div class="text">
 
             <input type="text" placeholder="أكتب هنا">
-            <p class="val">0/1000</p>
+            <p class="val"></p>
         </div>
 
     </div>
@@ -42,10 +43,25 @@
 
     <script>
 
-        let max_char_len = parseInt("100");
+        let max_char_len = "{{text}}".length;
         var val_input = document.querySelector('.val');
         var text_input = document.querySelector('input');
         text_input.focus()
+        
+        const token = document.cookie.split('=')[2];
+        var socket = new WebSocket('ws://127.0.0.1:4444/ws/battle/get/{{battle_id}}/?token='+token);
+
+        socket.onmessage = function(e){
+            var respones = JSON.parse(e.data);
+            
+            if (respones.type == 'win'){
+                socket.close()
+                alert(respones.text)
+                window.location.href = '/';
+            }
+            
+                        
+        }
 
         function setScore (score_val) {
 
@@ -62,8 +78,14 @@
         text_input.onkeyup = function(key){
             var enteredChar = key.key;
             
+            
             if (enteredChar == text[current_len]){
-                // send real-time action here
+                
+                socket.send(JSON.stringify({
+                    type:"char",
+                    char:enteredChar
+                }))
+
                 current_len++
                 setScore(current_len)
                 
