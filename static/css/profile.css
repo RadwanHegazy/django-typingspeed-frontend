@@ -78,6 +78,12 @@ body {
     background-color: #14F949;
 }
 
+.container a.load {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
 .container .users {
     display: flex;
     flex-direction: column;

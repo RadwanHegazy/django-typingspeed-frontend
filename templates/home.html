@@ -42,11 +42,14 @@
         var playBtn = document.querySelector('.play');
 
         playBtn.addEventListener('click',()=>{
+            playBtn.textContent = 'جاري البحث...';
+            playBtn.classList.add('load');
+            playBtn.disabled = true;
             var socket = new WebSocket('ws://127.0.0.1:4444/ws/battle/search/?token='+token);
             socket.onmessage = function(e){
                 var respones = JSON.parse(e.data);
-                
                 console.log(respones)
+                window.location.href = `/battle/get/${respones.battle_id}/`;
             }
 
         })
