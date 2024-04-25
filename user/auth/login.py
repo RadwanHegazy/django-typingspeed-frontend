@@ -21,8 +21,7 @@ class login_view (View) :
         )
 
         action.post()
-        print(data)
-        print(action.json_data)
+        
         if action.is_valid() : 
             user_token = action.json_data['access']
             res = redirect('profile')

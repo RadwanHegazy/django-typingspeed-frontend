@@ -9,6 +9,29 @@
 </head>
 <body>
     
+    <style>
+        .overlay { 
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            color: rgb(27, 159, 231);
+            font-family: "Cairo",sans-serif;
+        }
+    </style>
+
+    {% if players.friend is None %}
+        <div class="overlay">
+                <h1>  ..الرجاء انتظار لتحديدالاعبين</h1>
+        </div>
+    {% endif %}
+
     <div class="container">
 
         <div class="top">
@@ -21,8 +44,8 @@
             <p id="vers">ضد</p>
 
             <div class="user">
-                <img src="{{main_url}}{{players.friend.picture}}" alt="">
-                <p>{{players.friend.full_name}}</p>
+                <img id="frined_picture" src="{{main_url}}{{players.friend.picture}}" alt="">
+                <p id="friend_name">{{players.friend.full_name}}</p>
             </div>
 
         </div>
@@ -43,14 +66,18 @@
 
     <script>
 
-        let max_char_len = "{{text}}".length;
+        let max_char_len = `{{text}}`.length;
         var val_input = document.querySelector('.val');
         var text_input = document.querySelector('input');
         text_input.focus()
         
+
+        
         const token = document.cookie.split('=')[2];
         var socket = new WebSocket('ws://127.0.0.1:4444/ws/battle/get/{{battle_id}}/?token='+token);
+        var relaod = true;
 
+        
         socket.onmessage = function(e){
             var respones = JSON.parse(e.data);
             
@@ -60,7 +87,27 @@
                 window.location.href = '/';
             }
             
-                        
+            if (respones.start){
+                
+                var friend = respones.friend;
+                
+                console.log(friend)
+                var friend_pic_ele = document.getElementById('frined_picture');
+                var friend_name = document.getElementById('friend_name');
+                
+                
+                friend_name.textContent = friend.full_name;
+                friend_pic_ele.src = `{{main_url}}${friend.picture}`;
+                
+                if (relaod){
+                    window.location.reload()
+                    relaod = false;
+                }
+                
+            
+            }
+            
+            
         }
 
         function setScore (score_val) {
@@ -81,20 +128,23 @@
             
             if (enteredChar == text[current_len]){
                 
+                current_len++
+                setScore(current_len)
+                
+                
+                
                 socket.send(JSON.stringify({
                     type:"char",
                     char:enteredChar
                 }))
 
-                current_len++
-                setScore(current_len)
-                
+
                 if (enteredChar == ' '){
                     text_input.value = "";
-                }
-
+                };
+                
             }
-
+            
             
 
         }
